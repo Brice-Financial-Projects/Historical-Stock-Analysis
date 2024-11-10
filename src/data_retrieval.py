@@ -55,3 +55,13 @@ def fetch_stock_data(symbol, start_date, end_date):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data for {symbol}: {e}")
         return None
+
+
+# In your main function, after fetching the data
+if __name__ == "__main__":
+    data = fetch_stock_data(symbol=SYMBOL, start_date=START_DATE, end_date=END_DATE)
+    if data is None:
+        print("Failed to retrieve data.")
+    else:
+        # Save the data to CSV
+        save_data_to_csv(data, "historical_stock_data.csv")
