@@ -1,10 +1,15 @@
 """src / data_retrieval.py."""
 
+import os
 import requests
 import pandas as pd
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
-def fetch_stock_data(symbol, start_date, end_date, api_key):
+def fetch_stock_data(symbol, start_date, end_date):
     """
     Fetch historical stock data for a given symbol from the Tiingo API.
     
@@ -16,8 +21,6 @@ def fetch_stock_data(symbol, start_date, end_date, api_key):
         The start date for the data in the format 'YYYY-MM-DD'.
     end_date : str
         The end date for the data in the format 'YYYY-MM-DD'.
-    api_key : str
-        The API key for authenticating requests to the Tiingo API.
         
     Returns:
     --------
@@ -31,12 +34,15 @@ def fetch_stock_data(symbol, start_date, end_date, api_key):
     library to store the returned data as a DataFrame. If the request fails, 
     None is returned instead of a DataFrame.
     """
-    url = f"https://api.tiingo.com/tiingo/daily/{symbol}/prices"
+    api_key = os.getenv("TIINGO_API_KEY")
+    if not api_key:
+        raise ValueError("API key not found. Please set TIINGO_API_KEY in your .env file.")
+
+    url = f"https://api.tiingo.com/tiingo/daily/{symbol}/prices?token={api_key}"
     headers = {"Content-Type": "application/json"}
     params = {
         "startDate": start_date,
-        "endDate": end_date,
-        "token": api_key
+        "endDate": end_date
     }
 
     try:
