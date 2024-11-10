@@ -4,21 +4,35 @@ import os
 from src.data_retrieval import fetch_stock_data
 from src.analysis import calculate_daily_returns, moving_average
 from src.visualization import plot_stock_data
+from datetime import datetime
 import pandas as pd
+
 
 # Configuration Constants
 API_KEY = "YOUR_TIINGO_API_KEY"  # Ensure your .env or environment variable is configured correctly
 SYMBOL = "AAPL"
 START_DATE = "2020-01-01"
-END_DATE = "2023-01-01"
+END_DATE = "2024-10-31"
 
 def save_data_to_csv(data, filename="data/historical_stock_data.csv"):
     """
-    Save the stock data to a CSV file.
+    Save the stock data to a CSV file with a unique timestamped filename.
+
+    Parameters:
+        data (pd.DataFrame): The DataFrame containing stock data.
+        filename (str): The base name of the file to save the data to.
     """
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    data.to_csv(filename, index=False)
-    print(f"Data saved to {filename}")
+    # Create a timestamped filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base, ext = os.path.splitext(filename)
+    timestamped_filename = f"{base}_{timestamp}{ext}"
+
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(timestamped_filename), exist_ok=True)
+
+    # Save the data to the timestamped filename
+    data.to_csv(timestamped_filename, index=False)
+    print(f"Data saved to {timestamped_filename}")
 
 
 def main():
